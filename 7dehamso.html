@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>7 Đề Thi Hàm Số (50 câu mỗi đề)</title>
+
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(','\\)']] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+body{font-family:Arial;background:#f4f6f9;padding:20px}
+h1{text-align:center;color:#1e3a8a}
+
+.tabs{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px}
+.tab{padding:10px 15px;background:#2563eb;color:white;border-radius:8px;cursor:pointer}
+.tab.active{background:#1e40af}
+
+.question{background:white;padding:15px;margin-bottom:15px;border-radius:10px}
+.option{border:1px solid #ccc;padding:10px;margin-top:8px;border-radius:6px;cursor:pointer}
+
+.correct{background:#bbf7d0}
+.wrong{background:#fecaca}
+
+.explanation{
+  display:none;
+  margin-top:10px;
+  background:#eee;
+  padding:10px;
+  border-left:4px solid blue;
+}
+
+.score{font-size:18px;margin-bottom:15px}
+</style>
+</head>
+
+<body>
+
+<h1>HỆ THỐNG 7 ĐỀ THI HÀM SỐ</h1>
+
+<div class="tabs" id="tabs"></div>
+
+<div class="score">
+Điểm: <span id="score">0</span>
+</div>
+
+<div id="quiz"></div>
+
+<script>
+
+// ================= RANDOM HELPER =================
+function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+
+// ================= GENERATE QUESTION =================
+function generateQuestion(i){
+
+  const type = i % 8;
+
+  // 1. Miền xác định
+  if(type===0){
+    let a=rand(1,5);
+    return {
+      q:`Miền xác định của \\(f(x)=\\frac{1}{x-${a}}\\) là:`,
+      ops:[
+        "\\(\\mathbb{R}\\)",
+        `\\(\\mathbb{R}\\setminus\\{${a}\\}\\)`,
+        "x>0",
+        "x<0"
+      ],
+      ans:1,
+      exp:"Mẫu ≠ 0"
+    }
+  }
+
+  // 2. Miền giá trị
+  if(type===1){
+    return {
+      q:`Miền giá trị của \\(y=x^2\\) là:`,
+      ops:[
+        "\\(\\mathbb{R}\\)",
+        "\\([0;+\\infty)\\)",
+        "\\((0;+\\infty)\\)",
+        "\\(( -\\infty ;0]\\)"
+      ],
+      ans:1,
+      exp:"x² ≥ 0"
+    }
+  }
+
+  // 3. Chẵn lẻ
+  if(type===2){
+    return {
+      q:`Hàm \\(f(x)=x^3\\) là:`,
+      ops:["Chẵn","Lẻ","Không","Không xác định"],
+      ans:1,
+      exp:"f(-x)=-f(x)"
+    }
+  }
+
+  // 4. Không chẵn không lẻ
+  if(type===3){
+    return {
+      q:`Hàm \\(f(x)=x+1\\) là:`,
+      ops:["Chẵn","Lẻ","Không chẵn không lẻ","Hằng"],
+      ans:2,
+      exp:"Không đối xứng"
+    }
+  }
+
+  // 5. Đồ thị hàm số
+  if(type===4){
+    return {
+      q:`Đường tròn có phải đồ thị hàm số không?`,
+      ops:["Có","Không","Chỉ nửa trên","Chỉ nửa dưới"],
+      ans:1,
+      exp:"Một x có 2 y"
+    }
+  }
+
+  // 6. Hàm hợp
+  if(type===5){
+    return {
+      q:`Cho \\(f(x)=x^2, g(x)=x+1\\). \\(f(g(x))=?\\)`,
+      ops:[
+        "\\((x+1)^2\\)",
+        "\\(x^2+1\\)",
+        "\\(x^2+x\\)",
+        "\\(2x\\)"
+      ],
+      ans:0,
+      exp:"Thế g vào f"
+    }
+  }
+
+  // 7. Liên tục
+  if(type===6){
+    return {
+      q:`Hàm \\(f(x)=\\begin{cases}x^2 & x\\ge0 \\\\ -x & x<0\\end{cases}\\) có liên tục tại 0 không?`,
+      ops:["Có","Không","Không xác định","Phụ thuộc"],
+      ans:1,
+      exp:"Giới hạn trái ≠ phải"
+    }
+  }
+
+  // 8. Ý nghĩa đạo hàm
+  return {
+    q:`Ý nghĩa hình học của \\(f'(x)\\) là:`,
+    ops:[
+      "Diện tích",
+      "Hệ số góc tiếp tuyến",
+      "Chu vi",
+      "Thể tích"
+    ],
+    ans:1,
+    exp:"Đạo hàm = hệ số góc"
+  }
+}
+
+// ================= TẠO 7 ĐỀ =================
+const exams = [];
+
+for(let i=0;i<7;i++){
+  let exam=[];
+  for(let j=1;j<=50;j++){
+    exam.push(generateQuestion(j+i*50));
+  }
+  exams.push(exam);
+}
+
+// ================= UI =================
+const tabs=document.getElementById("tabs");
+const quiz=document.getElementById("quiz");
+let score=0;
+let currentExam=0;
+
+// tabs
+exams.forEach((e,i)=>{
+  const t=document.createElement("div");
+  t.className="tab";
+  t.innerText="Đề "+(i+1);
+  t.onclick=()=>loadExam(i);
+  tabs.appendChild(t);
+});
+
+function loadExam(i){
+  currentExam=i;
+  quiz.innerHTML="";
+  score=0;
+  document.getElementById("score").innerText=0;
+
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  tabs.children[i].classList.add("active");
+
+  exams[i].forEach((q,idx)=>{
+
+    const div=document.createElement("div");
+    div.className="question";
+
+    let html=`<b>Câu ${idx+1}. ${q.q}</b>`;
+
+    q.ops.forEach((op,j)=>{
+      html+=`<div class="option" onclick="check(this,${idx},${j})">
+      ${String.fromCharCode(65+j)}. ${op}
+      </div>`;
+    });
+
+    html+=`<div class="explanation">${q.exp}</div>`;
+
+    div.innerHTML=html;
+    quiz.appendChild(div);
+  });
+
+  MathJax.typeset();
+}
+
+// check
+function check(el,qIndex,selected){
+
+  const q=exams[currentExam][qIndex];
+  const parent=el.parentElement;
+  const ops=parent.querySelectorAll(".option");
+
+  ops.forEach((o,i)=>{
+    if(i===q.ans)o.classList.add("correct");
+    if(i===selected && i!==q.ans)o.classList.add("wrong");
+    o.onclick=null;
+  });
+
+  if(selected===q.ans){
+    score++;
+    document.getElementById("score").innerText=score;
+  }
+
+  parent.querySelector(".explanation").style.display="block";
+  MathJax.typeset();
+}
+
+// load first
+loadExam(0);
+
+</script>
+
+</body>
+</html>
