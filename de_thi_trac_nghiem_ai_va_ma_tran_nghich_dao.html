@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Đề thi trắc nghiệm AI & Ma trận nghịch đảo</title>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+body{font-family:Arial;padding:20px;background:#f5f5f5}
+.question{background:white;padding:15px;margin-bottom:15px;border-radius:10px}
+.option{padding:8px;margin:5px 0;border-radius:5px;cursor:pointer;border:1px solid #ccc}
+.correct{background:#c8f7c5}
+.wrong{background:#f7c5c5}
+.explanation{margin-top:10px;padding:10px;background:#eef;display:none;border-radius:5px}
+button{padding:10px 15px;margin-top:20px}
+</style>
+</head>
+<body>
+<h1>Đề thi trắc nghiệm: AI & Ma trận nghịch đảo</h1>
+<div id="quiz"></div>
+<button onclick="downloadHTML()">Tải file HTML</button>
+
+<script>
+const questions = [
+{
+q:"Ba trụ cột của AI là gì?",
+options:["AI, ML, DL","Prompt, Context, Harnessing","Python, Java, C++","Input, Output, Process"],
+answer:1,
+exp:"Ba trụ cột là Prompt, Context, Harnessing.",
+tip:"Nhớ: hỏi gì (Prompt), nền tảng gì (Context), kiểm soát ra sao (Harnessing)."
+},
+{
+q:"\\(\\det \\begin{pmatrix}1&2\\\\3&4\\end{pmatrix}=?\\)",
+options:["\\(-2\\)","\\(2\\)","\\(10\\)","\\(0\\)"],
+answer:0,
+exp:"\\(1\\cdot4-2\\cdot3=-2\\)",
+tip:"\\(ad-bc\\)"
+},
+{
+q:"\\(\\det \\begin{pmatrix}2&0\\\\0&3\\end{pmatrix}=?\\)",
+options:["\\(6\\)","\\(5\\)","\\(3\\)","\\(0\\)"],
+answer:0,
+exp:"\\(2\\cdot3=6\\)",
+tip:"ma trận chéo"
+},
+{
+q:"\\(\\det \\begin{pmatrix}3&1\\\\2&2\\end{pmatrix}=?\\)",
+options:["\\(4\\)","\\(5\\)","\\(6\\)","\\(3\\)"],
+answer:0,
+exp:"\\(3\\cdot2-1\\cdot2=4\\)",
+tip:"tính nhanh"
+},
+{
+q:"\\(\\det \\begin{pmatrix}0&1\\\\2&3\\end{pmatrix}=?\\)",
+options:["\\(-2\\)","\\(2\\)","\\(3\\)","\\(1\\)"],
+answer:0,
+exp:"\\(0\\cdot3-1\\cdot2=-2\\)",
+tip:"cẩn thận dấu"
+},
+{
+q:"\\(A=\\begin{pmatrix}1&0\\\\0&1\\end{pmatrix}\\), nghịch đảo?",
+options:["\\(A\\)","\\(-A\\)","\\(0\\)","không có"],
+answer:0,
+exp:"\\(I^{-1}=I\\)",
+tip:"ma trận đơn vị"
+},
+{
+q:"\\(\\det \\begin{pmatrix}2&1\\\\1&2\\end{pmatrix}=?\\)",
+options:["\\(3\\)","\\(4\\)","\\(5\\)","\\(2\\)"],
+answer:0,
+exp:"\\(2\\cdot2-1\\cdot1=3\\)",
+tip:"đừng nhầm"
+},
+{
+q:"Nếu đổi 2 hàng thì định thức?",
+options:["đổi dấu","giữ nguyên","nhân 2","0"],
+answer:0,
+exp:"Định thức đổi dấu khi đổi 2 hàng.",
+tip:"tính chất quan trọng"
+},
+{
+q:"\\(\\det \\begin{pmatrix}1&2\\\\2&4\\end{pmatrix}=?\\)",
+options:["\\(0\\)","\\(2\\)","\\(4\\)","\\(6\\)"],
+answer:0,
+exp:"Hai hàng phụ thuộc → det=0",
+tip:"hàng tỷ lệ"
+},
+{
+q:"\\(\\det(AB)=?\\)",
+options:["\\(detA+detB\\)","\\(detA\\cdot detB\\)","\\(detA/detB\\)","\\(0\\)"],
+answer:1,
+exp:"\\(\\det(AB)=\\det(A)\\det(B)\\)",
+tip:"nhân định thức"
+}
+];
+
+const quiz = document.getElementById("quiz");
+
+questions.forEach((item, index)=>{
+let div=document.createElement("div");
+div.className="question";
+div.innerHTML=`<b>Câu ${index+1}:</b> ${item.q}`;
+
+item.options.forEach((opt,i)=>{
+let o=document.createElement("div");
+o.className="option";
+o.innerHTML=opt;
+o.onclick=()=>{
+if(o.classList.contains("correct")||o.classList.contains("wrong")) return;
+if(i===item.answer){o.classList.add("correct");}
+else{o.classList.add("wrong");}
+exp.style.display="block";
+MathJax.typeset();
+};
+div.appendChild(o);
+});
+
+let exp=document.createElement("div");
+exp.className="explanation";
+exp.innerHTML=`<b>Giải thích:</b> ${item.exp}<br><b>Mẹo:</b> ${item.tip}`;
+div.appendChild(exp);
+
+quiz.appendChild(div);
+});
+
+function downloadHTML(){
+const blob = new Blob([document.documentElement.outerHTML], {type:"text/html"});
+const a = document.createElement("a");
+a.href = URL.createObjectURL(blob);
+a.download = "de-thi.html";
+a.click();
+}
+
+window.onload = () => MathJax.typeset();
+</script>
+</body>
+</html>
