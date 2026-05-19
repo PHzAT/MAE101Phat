@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Đề thi trắc nghiệm AI & Ma trận nghịch đảo</title>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+body{font-family:Arial;padding:20px;background:#f5f5f5}
+.question{background:white;padding:15px;margin-bottom:15px;border-radius:10px}
+.option{padding:8px;margin:5px 0;border-radius:5px;cursor:pointer;border:1px solid #ccc}
+.correct{background:#c8f7c5}
+.wrong{background:#f7c5c5}
+.explanation{margin-top:10px;padding:10px;background:#eef;display:none;border-radius:5px}
+button{padding:10px 15px;margin-top:20px}
+</style>
+</head>
+<body>
+<h1>Đề thi trắc nghiệm: AI & Ma trận nghịch đảo</h1>
+<div id="quiz"></div>
+<button onclick="downloadHTML()">Tải file HTML</button>
+
+<script>
+const questions = [
+// 5 lý thuyết
+{
+q:"Ba trụ cột của AI là gì?",
+options:["AI, ML, DL","Prompt, Context, Harnessing","Python, Java, C++","Input, Output, Process"],
+answer:1,
+exp:"Ba trụ cột là Prompt, Context, Harnessing.",
+tip:"Nhớ: hỏi gì (Prompt), nền tảng gì (Context), kiểm soát ra sao (Harnessing)."
+},
+{
+q:"Harnessing nghĩa là gì?",
+options:["Tắt AI","Điều khiển AI","Viết code","Cài phần mềm"],
+answer:1,
+exp:"Harnessing là ghì cương AI.",
+tip:"Liên tưởng cưỡi ngựa."
+},
+{
+q:"Vai trò mới của giáo viên?",
+options:["Giảng bài","Soạn slide","Chỉ cách học","Chấm điểm"],
+answer:2,
+exp:"Thầy chỉ cách học.",
+tip:"AI dạy, thầy dẫn."
+},
+{
+q:"AI clone giáo viên nghĩa là?",
+options:["Sao chép dữ liệu","Bắt chước phong cách","Hack hệ thống","Lưu file"],
+answer:1,
+exp:"AI có thể bắt chước phong cách giảng.",
+tip:"Clone = bắt chước." 
+},
+{
+q:"Prompt là gì?",
+options:["Dữ liệu","Câu lệnh","Kết quả","File"],
+answer:1,
+exp:"Prompt là câu lệnh cho AI.",
+tip:"Prompt = hỏi." 
+},
+
+// 5 dễ
+{
+q:"\(\det \begin{pmatrix}1&2\\3&4\end{pmatrix}=?\)",
+options:["-2","2","10","0"],
+answer:0,
+exp:"1*4-2*3=-2",
+tip:"ad-bc"
+},
+{
+q:"Ma trận nghịch đảo tồn tại khi?",
+options:["det=0","det≠0","mọi trường hợp","không biết"],
+answer:1,
+exp:"det khác 0.",
+tip:"0 là không đảo được."
+},
+{
+q:"\(\det \begin{pmatrix}2&0\\0&3\end{pmatrix}=?\)",
+options:["6","5","3","0"],
+answer:0,
+exp:"2*3=6",
+tip:"ma trận chéo dễ tính"
+},
+{
+q:"\(A^{-1}\) của ma trận 2x2 có dạng?",
+options:["đổi chéo, đổi dấu","giữ nguyên","nhân đôi","chia 2"],
+answer:0,
+exp:"đổi chéo, đổi dấu rồi chia định thức",
+tip:"nhớ công thức mẫu"
+},
+{
+q:"\(\det(A)=0\) thì?",
+options:["có nghịch đảo","không có","tùy","luôn đúng"],
+answer:1,
+exp:"không khả nghịch",
+tip:"det=0 -> mất thông tin"
+},
+
+// 5 trung bình
+{
+q:"\(\det \begin{pmatrix}3&1\\2&2\end{pmatrix}=?\)",
+options:["4","5","6","3"],
+answer:0,
+exp:"3*2-1*2=4",
+tip:"tính nhanh"
+},
+{
+q:"\(\det \begin{pmatrix}0&1\\2&3\end{pmatrix}=?\)",
+options:["-2","2","3","1"],
+answer:0,
+exp:"0*3-1*2=-2",
+tip:"cẩn thận dấu"
+},
+{
+q:"\(A=\begin{pmatrix}1&0\\0&1\end{pmatrix}\), nghịch đảo?",
+options:["A","-A","0","không có"],
+answer:0,
+exp:"I^-1 = I",
+tip:"ma trận đơn vị"
+},
+{
+q:"\(\det \begin{pmatrix}2&1\\1&2\end{pmatrix}=?\)",
+options:["3","4","5","2"],
+answer:0,
+exp:"2*2-1*1=3",
+tip:"đừng nhầm"
+},
+{
+q:"Nếu đổi 2 hàng thì det?",
+options:["đổi dấu","giữ nguyên","nhân 2","0"],
+answer:0,
+exp:"đổi dấu",
+tip:"quy tắc định thức"
+},
+
+// 5 khó
+{
+q:"\(\det \begin{pmatrix}1&2\\2&4\end{pmatrix}=?\)",
+options:["0","2","4","6"],
+answer:0,
+exp:"hàng phụ thuộc -> det=0",
+tip:"2 hàng tỷ lệ"
+},
+{
+q:"\(A^{-1}\) tồn tại khi nào?",
+options:["det=0","det≠0","luôn","không bao giờ"],
+answer:1,
+exp:"định nghĩa",
+tip:"nhớ điều kiện"
+},
+{
+q:"\(\det(AB)=?\)",
+options:["detA+detB","detA.detB","detA/detB","0"],
+answer:1,
+exp:"tính chất",
+tip:"nhân ma trận -> nhân định thức"
+},
+{
+q:"\(\det(A^T)=?\)",
+options:["detA","-detA","0","1"],
+answer:0,
+exp:"chuyển vị không đổi",
+tip:"tính chất cơ bản"
+},
+{
+q:"Ma trận khả nghịch nghĩa là?",
+options:["có det=0","có nghịch đảo","không vuông","không biết"],
+answer:1,
+exp:"định nghĩa",
+tip:"khả nghịch = có inverse"
+}
+];
+
+const quiz = document.getElementById("quiz");
+
+questions.forEach((item, index)=>{
+let div=document.createElement("div");
+div.className="question";
+div.innerHTML=`<b>Câu ${index+1}:</b> ${item.q}`;
+
+item.options.forEach((opt,i)=>{
+let o=document.createElement("div");
+o.className="option";
+o.innerHTML=opt;
+o.onclick=()=>{
+if(o.classList.contains("correct")||o.classList.contains("wrong")) return;
+if(i===item.answer){o.classList.add("correct");}
+else{o.classList.add("wrong");}
+exp.style.display="block";
+};
+div.appendChild(o);
+});
+
+let exp=document.createElement("div");
+exp.className="explanation";
+exp.innerHTML=`<b>Giải thích:</b> ${item.exp}<br><b>Mẹo:</b> ${item.tip}`;
+div.appendChild(exp);
+
+quiz.appendChild(div);
+});
+
+function downloadHTML(){
+const blob = new Blob([document.documentElement.outerHTML], {type:"text/html"});
+const a = document.createElement("a");
+a.href = URL.createObjectURL(blob);
+a.download = "de-thi.html";
+a.click();
+}
+</script>
+</body>
+</html>
