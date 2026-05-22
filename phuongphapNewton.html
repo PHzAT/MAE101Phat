@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Đề thi Newton tương tác</title>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+body{font-family:Arial;padding:20px;background:#f5f5f5}
+.question{background:white;padding:15px;margin-bottom:15px;border-radius:10px}
+.option{padding:8px;margin:5px 0;border-radius:5px;cursor:pointer;border:1px solid #ccc}
+.correct{background:#c8f7c5}
+.wrong{background:#f7c5c5}
+.explanation{margin-top:10px;padding:10px;background:#eef;display:none;border-radius:5px}
+button{padding:10px 15px;margin-top:20px}
+</style>
+</head>
+<body>
+<h1>Đề thi: Phương pháp Newton</h1>
+<div id="quiz"></div>
+<button onclick="downloadHTML()">Tải file HTML</button>
+
+<script>
+const questions = [
+
+// ===== LÝ THUYẾT (5 câu) =====
+{
+q:"Công thức Newton là gì?",
+options:["\\(x_{n+1}=x_n+\\frac{f}{f'}\\)","\\(x_{n+1}=x_n-\\frac{f}{f'}\\)","\\(x_{n+1}=f(x)\\)","\\(x_{n+1}=x_n^2\\)"],
+answer:1,
+exp:"\\(x_{n+1}=x_n-\\frac{f(x_n)}{f'(x_n)}\\)",
+tip:"Luôn có dấu trừ"
+},
+{
+q:"Ý tưởng chính của Newton là gì?",
+options:["Tính đạo hàm","Vẽ tiếp tuyến","Giải phương trình","Tính tích phân"],
+answer:1,
+exp:"Dùng tiếp tuyến để xấp xỉ nghiệm.",
+tip:"Tiếp tuyến = đường thẳng"
+},
+{
+q:"Khi nào Newton thất bại?",
+options:["\\(f(x)=0\\)","\\(f'(x)=0\\)","\\(x>0\\)","\\(f<0\\)"],
+answer:1,
+exp:"Chia cho 0 → lỗi",
+tip:"Đạo hàm bằng 0 là nguy hiểm"
+},
+{
+q:"Harnessing nghĩa là gì?",
+options:["Tính toán","Điều khiển","Lập trình","Phân tích"],
+answer:1,
+exp:"Ghì cương AI",
+tip:"Nhớ hình con ngựa"
+},
+{
+q:"Newton hội tụ nhanh thuộc loại nào?",
+options:["Tuyến tính","Bậc 2","Bậc 3","Ngẫu nhiên"],
+answer:1,
+exp:"Hội tụ bậc 2",
+tip:"Newton rất nhanh"
+},
+
+// ===== DỄ (5 câu) =====
+{
+q:"\\(f(x)=x^2-2, x_0=1\\). Tính \\(x_1\\)",
+options:["\\(1.5\\)","\\(1\\)","\\(2\\)","\\(0\\)"],
+answer:0,
+exp:"\\(x_1=1-(-1/2)=1.5\\)",
+tip:"thay số nhanh"
+},
+{
+q:"\\(f(x)=x^2-4\\). Nghiệm là?",
+options:["\\(2\\)","\\(±2\\)","\\(0\\)","\\(4\\)"],
+answer:1,
+exp:"\\(x^2=4\\)",
+tip:"căn bậc 2"
+},
+{
+q:"\\(f'(x)=2x\\). Khi \\(x=1\\)?",
+options:["2","1","0","3"],
+answer:0,
+exp:"2*1=2",
+tip:"thay số"
+},
+{
+q:"\\(f(x)=x^2\\), đạo hàm?",
+options:["2x","x","x^2","1"],
+answer:0,
+exp:"đạo hàm cơ bản",
+tip:"thuộc lòng"
+},
+{
+q:"Newton cần gì?",
+options:["\\(f\\)","\\(f'\\)","cả hai","không cần"],
+answer:2,
+exp:"cần cả f và f'",
+tip:"thiếu đạo hàm là chết"
+},
+
+// ===== TRUNG BÌNH =====
+{
+q:"\\(f(x)=x^2-3\\), x0=2, x1=?",
+options:["1.75","1.5","2","1"],
+answer:0,
+exp:"2-(1/4)=1.75",
+tip:"tính nhanh"
+},
+{
+q:"\\(f(x)=x^2-2\\), x2 gần?",
+options:["1.41","1.5","2","1"],
+answer:0,
+exp:"\\(≈1.414\\)",
+tip:"căn 2"
+},
+{
+q:"\\(f(x)=cosx-x\\), nghiệm gần?",
+options:["0.739","1","0","2"],
+answer:0,
+exp:"kết quả chuẩn",
+tip:"nhớ số nổi tiếng"
+},
+{
+q:"Newton có thể phân kỳ khi?",
+options:["x0 xấu","f đẹp","đạo hàm lớn","luôn hội tụ"],
+answer:0,
+exp:"chọn x0 sai",
+tip:"điểm đầu rất quan trọng"
+},
+{
+q:"\\(|x_{n+1}-x_n|<\\epsilon\\) nghĩa là?",
+options:["dừng","tiếp tục","sai","không biết"],
+answer:0,
+exp:"điều kiện dừng",
+tip:"sai số nhỏ"
+},
+
+// ===== KHÓ =====
+{
+q:"\\(f(x)=x^3-2x-5\\), x0=2, x1=?",
+options:["2.1","2.09","2","1.9"],
+answer:1,
+exp:"≈2.09",
+tip:"tính gần đúng"
+},
+{
+q:"Nếu \\(f'(x)\\) rất nhỏ?",
+options:["tốt","xấu","không ảnh hưởng","luôn đúng"],
+answer:1,
+exp:"bước nhảy lớn → nguy hiểm",
+tip:"chia nhỏ → nhảy lớn"
+},
+{
+q:"Newton hội tụ nhanh khi?",
+options:["gần nghiệm","xa nghiệm","mọi lúc","không biết"],
+answer:0,
+exp:"gần nghiệm hội tụ nhanh",
+tip:"local method"
+},
+{
+q:"Nếu hàm nhiều nghiệm?",
+options:["1 nghiệm","ngẫu nhiên","gần x0","xa x0"],
+answer:2,
+exp:"phụ thuộc x0",
+tip:"chọn điểm đầu"
+},
+{
+q:"Newton là gì?",
+options:["công thức","thuật toán","định lý","hàm"],
+answer:1,
+exp:"là thuật toán lặp",
+tip:"không chỉ công thức"
+}
+];
+
+const quiz=document.getElementById("quiz");
+questions.forEach((item,index)=>{
+let div=document.createElement("div");
+div.className="question";
+div.innerHTML=`<b>Câu ${index+1}:</b> ${item.q}`;
+
+item.options.forEach((opt,i)=>{
+let o=document.createElement("div");
+o.className="option";
+o.innerHTML=opt;
+o.onclick=()=>{
+if(i===item.answer){o.classList.add("correct");}
+else{o.classList.add("wrong");}
+exp.style.display="block";
+MathJax.typeset();
+};
+div.appendChild(o);
+});
+
+let exp=document.createElement("div");
+exp.className="explanation";
+exp.innerHTML=`<b>Giải thích:</b> ${item.exp}<br><b>Mẹo:</b> ${item.tip}`;
+div.appendChild(exp);
+
+quiz.appendChild(div);
+});
+
+function downloadHTML(){
+const blob=new Blob([document.documentElement.outerHTML],{type:"text/html"});
+const a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+a.download="newton-quiz.html";
+a.click();
+}
+
+window.onload=()=>MathJax.typeset();
+</script>
+</body>
+</html>
