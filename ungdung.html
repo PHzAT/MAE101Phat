@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Đề thi trắc nghiệm - Ứng dụng đạo hàm</title>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async
+ src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+body { font-family: Arial; margin: 20px; }
+.question { margin-bottom: 25px; padding: 15px; border: 1px solid #ccc; border-radius: 10px; }
+.correct { background-color: #d4edda; }
+.wrong { background-color: #f8d7da; }
+button { margin-top: 10px; }
+.explain { margin-top: 10px; display: none; }
+</style>
+</head>
+
+<body>
+
+<h1>Đề thi trắc nghiệm: Ứng dụng đạo hàm</h1>
+
+<div id="quiz"></div>
+
+<script>
+
+const questions = [
+
+{q:"Công thức xấp xỉ tuyến tính là gì?",
+choices:["f(a)+f(a)(x-a)","f(a)+f'(a)(x-a)","f'(a)+f(x-a)","f(x)+f'(a)"],
+correct:1,
+explain:"Đây là công thức chuẩn của linearization.",
+tip:"Nhớ dạng: giá trị + độ dốc × độ lệch."
+},
+
+{q:"Đạo hàm biểu thị điều gì?",
+choices:["Diện tích","Tốc độ thay đổi","Thể tích","Chu vi"],
+correct:1,
+explain:"Đạo hàm là tốc độ thay đổi tức thời.",
+tip:"Đạo hàm = tốc độ."
+},
+
+{q:"Chain rule dùng khi nào?",
+choices:["Hàm đơn","Hàm hợp","Hàm hằng","Hàm tuyến tính"],
+correct:1,
+explain:"Chain rule áp dụng cho hàm hợp.",
+tip:"Hàm lồng nhau → chain rule."
+},
+
+{q:"\(f'(x)\) là gì?",
+choices:["Tích phân","Đạo hàm","Giới hạn","Hàm số"],
+correct:1,
+explain:"f'(x) là đạo hàm.",
+tip:"Dấu ' là đạo hàm."
+},
+
+{q:"Sai số vi phân là?",
+choices:["dy≈Δy","dy=0","dy=x","dy=y"],
+correct:0,
+explain:"Vi phân gần bằng sai số.",
+tip:"dy ≈ Δy"
+},
+
+// Bài tập dễ
+{q:"\(\sqrt{4.1}\) ≈ ?",
+choices:["2.025","2.5","3","1.9"],
+correct:0,
+explain:"Áp dụng linearization tại 4.",
+tip:"Chọn số gần 4."
+},
+
+{q:"\(\sqrt{9.1}\) ≈ ?",
+choices:["3.0167","3.1","3.5","2.9"],
+correct:0,
+explain:"f'(9)=1/6.",
+tip:"Nhớ đạo hàm căn."
+},
+
+{q:"\(\sin 31^\circ\) gần gì?",
+choices:["0.5","0.515","0.7","0.3"],
+correct:1,
+explain:"Dùng xấp xỉ tại 30°.",
+tip:"Gần sin30."
+},
+
+{q:"\(dV/dt\) là gì?",
+choices:["Thể tích","Tốc độ thay đổi thể tích","Bán kính","Diện tích"],
+correct:1,
+explain:"Đây là tốc độ thay đổi.",
+tip:"d/dt = tốc độ."
+},
+
+{q:"\(dr/dt\) là gì?",
+choices:["Tốc độ bán kính","Thể tích","Diện tích","Khối lượng"],
+correct:0,
+explain:"Đạo hàm theo thời gian.",
+tip:"dr/dt = tốc độ r."
+},
+
+// Trung bình
+{q:"Bóng cầu: V=4/3πr³, đạo hàm là?",
+choices:["4πr² dr/dt","3r²","r³","πr²"],
+correct:0,
+explain:"Áp dụng chain rule.",
+tip:"Giảm số mũ xuống."
+},
+
+{q:"Thang: x²+y²=100, đạo hàm?",
+choices:["2x dx/dt + 2y dy/dt","x+y","x²+y²","0"],
+correct:0,
+explain:"Đạo hàm từng vế.",
+tip:"Đạo hàm từng biến."
+},
+
+{q:"Nếu dx/dt=1, x=6, y=8, dy/dt=?",
+choices:["-0.75","0.75","1","-1"],
+correct:0,
+explain:"Thay vào phương trình.",
+tip:"Dấu âm rất quan trọng."
+},
+
+{q:"Sai số tăng khi?",
+choices:["Xa điểm a","Gần điểm a","Bằng a","Không đổi"],
+correct:0,
+explain:"Xa thì sai lớn.",
+tip:"Càng gần càng đúng."
+},
+
+{q:"Linearization tốt khi?",
+choices:["x gần a","x xa a","x lớn","x nhỏ"],
+correct:0,
+explain:"Phải gần điểm tiếp tuyến.",
+tip:"Gần a!"
+},
+
+// Khó
+{q:"\(\sqrt[3]{8.1}\) ≈ ?",
+choices:["2.004","2.1","1.9","2.5"],
+correct:0,
+explain:"Dùng a=8.",
+tip:"Chọn số dễ tính."
+},
+
+{q:"Nếu dV/dt=10, r=5 thì dr/dt?",
+choices:["1/(10π)","1","10","5"],
+correct:0,
+explain:"Áp dụng công thức cầu.",
+tip:"Nhớ 4πr²."
+},
+
+{q:"Chain rule đúng là?",
+choices:["dy/dt = dy/dx * dx/dt","dy/dt=dx/dy","dy/dx=dt","dx/dt=dy"],
+correct:0,
+explain:"Định nghĩa chuẩn.",
+tip:"Nhân chuỗi."
+},
+
+{q:"Đạo hàm giúp gì?",
+choices:["Ước lượng","Trang trí","Vẽ hình","Không gì"],
+correct:0,
+explain:"Giúp ước lượng.",
+tip:"Think approximation."
+},
+
+{q:"AI không thay thế được?",
+choices:["Tính toán","Mô hình hóa","Cộng số","Nhân số"],
+correct:1,
+explain:"Con người phải lập mô hình.",
+tip:"Hiểu > tính."
+}
+
+];
+
+const quizDiv = document.getElementById("quiz");
+
+questions.forEach((item,index)=>{
+ let div=document.createElement("div");
+ div.className="question";
+ div.innerHTML="<b>Câu "+(index+1)+":</b> "+item.q+"<br>";
+
+ item.choices.forEach((choice,i)=>{
+  let btn=document.createElement("button");
+  btn.innerHTML=choice;
+  btn.onclick=function(){
+    if(i===item.correct){
+      div.classList.add("correct");
+    } else {
+      div.classList.add("wrong");
+    }
+    exp.style.display="block";
+  };
+  div.appendChild(btn);
+ });
+
+ let exp=document.createElement("div");
+ exp.className="explain";
+ exp.innerHTML="<br><b>Giải thích:</b> "+item.explain+"<br><b>Mẹo:</b> "+item.tip;
+ div.appendChild(exp);
+
+ quizDiv.appendChild(div);
+});
+
+</script>
+
+</body>
+</html>
